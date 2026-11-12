@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Déménagement du 28 novembre</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout : une étiquette de carton en en-tête, puis un tableau de bord compact et trois vues (Tâches, Jour J, Équipe) en colonne unique de 880px. */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --sunk:#f6f8fb; --ink:#141a2b; --muted:#59627a; --line:#d9dfe9;
+  --accent:#1f4fd8; --accent-ink:#ffffff; --mark:#ffd23f; --mark-ink:#1d1a07;
+  --danger:#c2341f; --ok:#1d7f47; --warn:#a85d00;
+  --c-demarches:#1f4fd8; --c-logistique:#7a3fd1; --c-cartons:#9a5f0e; --c-menage:#0f7f80; --c-equipe:#c93a73;
+  --plan:#e8742a; --plan-fill:#fff4ec; --plan-sel:#f6b98c; --wall:#2a2420;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e121b; --surface:#161b27; --sunk:#121722; --ink:#e6e9f2; --muted:#9aa3b8; --line:#2a3245;
+  --accent:#7d9cff; --accent-ink:#0b1022; --mark:#ffd23f; --mark-ink:#1d1a07;
+  --danger:#ff7a63; --ok:#5fd394; --warn:#f0a94a;
+  --c-demarches:#7d9cff; --c-logistique:#b58cff; --c-cartons:#e0a85a; --c-menage:#4fd0cf; --c-equipe:#ff86b3;
+  --plan:#ff9a52; --plan-fill:#24190f; --plan-sel:#7a3d14; --wall:#e6e9f2;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e121b; --surface:#161b27; --sunk:#121722; --ink:#e6e9f2; --muted:#9aa3b8; --line:#2a3245;
+  --accent:#7d9cff; --accent-ink:#0b1022; --mark:#ffd23f; --mark-ink:#1d1a07;
+  --danger:#ff7a63; --ok:#5fd394; --warn:#f0a94a;
+  --c-demarches:#7d9cff; --c-logistique:#b58cff; --c-cartons:#e0a85a; --c-menage:#4fd0cf; --c-equipe:#ff86b3;
+  --plan:#ff9a52; --plan-fill:#24190f; --plan-sel:#7a3d14; --wall:#e6e9f2;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Étiquette */
+.label{background:var(--surface);border:2px solid var(--ink);border-radius:4px;display:grid;grid-template-columns:1fr auto;overflow:hidden}
+.label .l{padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.label h1{font-size:clamp(28px,6vw,44px);font-weight:850;font-stretch:78%;line-height:1;letter-spacing:-.01em}
+.fragile{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.stamp{background:var(--mark);color:var(--mark-ink);border-left:2px solid var(--ink);padding:14px 22px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:130px}
+.stamp b{font-family:var(--f-display);font-size:clamp(44px,10vw,68px);font-weight:900;font-stretch:62%;line-height:.9}
+.stamp span{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:520px){.label{grid-template-columns:1fr}.stamp{border-left:0;border-top:2px solid var(--ink);flex-direction:row;gap:12px;justify-content:flex-start;padding:10px 20px}.stamp b{font-size:44px}}
+
+/* Résumé */
+.summary{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:10px}
+@media (max-width:640px){.summary{grid-template-columns:1fr 1fr}.summary .prog{grid-column:1/-1}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .v{font-family:var(--f-display);font-weight:800;font-stretch:80%;font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile.alert .v{color:var(--danger)}
+.bar{height:8px;border-radius:99px;background:var(--sunk);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .4s}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* Barre "vous êtes" + onglets */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px}
+.tabs button{border:0;background:none;padding:7px 16px;border-radius:99px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.me{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+select,input[type=text],input[type=date],input[type=time],textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+textarea{resize:vertical;min-height:60px;width:100%}
+
+.banner{border:1px dashed var(--warn);color:var(--warn);background:var(--surface);border-radius:var(--r);padding:10px 14px;font-size:14px}
+
+/* Filtres */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 11px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.dot{width:9px;height:9px;border-radius:2px;flex:none;background:var(--cc,var(--muted))}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:14px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Groupes et tâches */
+.group{display:flex;flex-direction:column;gap:8px}
+.group h2{font-size:15px;font-weight:800;font-stretch:90%;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:baseline;gap:10px}
+.group h2 small{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:0;text-transform:none;font-weight:500}
+.group.late h2{color:var(--danger)}
+.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.task{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;padding:11px 14px;border-top:1px solid var(--line);align-items:start}
+.task:first-child{border-top:0}
+.task .cb{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ok);cursor:pointer}
+.task .main{min-width:0;display:flex;flex-direction:column;gap:3px}
+.task .t{font-weight:600;overflow-wrap:anywhere}
+.task.done .t{text-decoration:line-through;color:var(--muted);font-weight:500}
+.task .notes{font-size:13px;color:var(--muted);overflow-wrap:anywhere;white-space:pre-wrap}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--muted);align-items:center}
+.meta .cat{display:inline-flex;align-items:center;gap:5px;color:var(--cc)}
+.meta .when.late{color:var(--danger);font-weight:600}
+.meta .when.soon{color:var(--warn);font-weight:600}
+.right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.people{display:flex;gap:3px}
+.av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;background:var(--avc);flex:none;font-family:var(--f-body)}
+.av.none{background:none;border:1.5px dashed var(--muted);color:var(--muted);width:auto;padding:0 8px;border-radius:99px;font-weight:600}
+.iconbtn{border:1px solid transparent;background:none;border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--muted);font-size:13px}
+.iconbtn:hover{border-color:var(--line);color:var(--ink)}
+.take{border:1px solid var(--accent);color:var(--accent);background:none;border-radius:99px;padding:2px 10px;font-size:12.5px;font-weight:600;cursor:pointer}
+@media (max-width:520px){.task{grid-template-columns:auto 1fr}.task .right{grid-column:2;justify-content:flex-start}}
+
+/* Éditeur */
+.editor{grid-column:1/-1;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:14px;margin-top:6px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.editor > .f:nth-child(2){grid-column:span 1}
+.editor .f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+.editor .f > *:not(span){color:var(--ink);font-size:14px}
+.editor .full{grid-column:1/-1}
+.editor .half{grid-column:span 2}
+.editor .actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.pick{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:3px 10px 3px 4px;font-size:13px;cursor:pointer;color:var(--ink)}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick:has(input:checked){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.pick:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.pick .av{width:20px;height:20px;font-size:9px}
+@media (max-width:640px){.editor{grid-template-columns:1fr 1fr}.editor .half{grid-column:1/-1}}
+
+details.donebox summary{cursor:pointer;font-family:var(--f-display);font-weight:800;font-stretch:90%;text-transform:uppercase;letter-spacing:.06em;font-size:15px;color:var(--muted);padding:4px 0}
+details.donebox .list{margin-top:8px}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
+
+/* Jour J */
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.slot{display:grid;grid-template-columns:72px 1fr;border-top:1px solid var(--line)}
+.slot:first-child{border-top:0}
+.slot .h{font-family:var(--f-mono);font-weight:700;font-size:15px;padding:12px 0 12px 14px;border-right:2px solid var(--mark)}
+.slot .b{padding:10px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.slot .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.slot .row .t{font-weight:600;overflow-wrap:anywhere;min-width:0}
+.slot .row.done .t{text-decoration:line-through;color:var(--muted)}
+.crewline{display:flex;flex-wrap:wrap;gap:8px}
+.crewchip{display:inline-flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px 12px 4px 4px;font-size:13px}
+.crewchip small{color:var(--muted)}
+
+/* Équipe */
+.crew{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.member{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.member .hd{display:flex;gap:10px;align-items:center}
+.member .hd .av{width:34px;height:34px;font-size:13px}
+.member .nm{font-weight:700;overflow-wrap:anywhere}
+.member .dispo{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.member ul{margin:0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:2px}
+.member .foot{display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted);margin-top:auto}
+.addform{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.addform .f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);flex:1 1 180px;min-width:0}
+.addform .f > *:not(span){color:var(--ink);font-size:14px}
+.hint{font-size:13px;color:var(--muted)}
+
+/* Plan */
+.planwrap{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;align-items:start}
+@media (max-width:760px){.planwrap{grid-template-columns:1fr}}
+.planbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px;min-width:0}
+.planbox svg{display:block;width:100%;height:auto}
+.room{cursor:pointer}
+.room .fill{fill:url(#hatch);stroke:var(--wall);stroke-width:7;stroke-linejoin:miter;transition:fill .15s}
+.room.open .fill{stroke-dasharray:14 10;stroke-width:3}
+.room:hover .fill{fill:var(--plan-sel);fill-opacity:.55}
+.room.sel .fill{fill:var(--plan-sel)}
+.room text{fill:var(--ink);font-family:var(--f-body);pointer-events:none}
+.room .nm{font-size:30px;font-weight:700}
+.room .m2{font-size:24px;fill:var(--muted);font-family:var(--f-mono)}
+.room .ld{font-size:22px;fill:var(--plan);font-weight:700}
+.planlbl{fill:var(--muted);font-family:var(--f-mono);font-size:22px}
+.roomchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.roomchips .chip .code{font-family:var(--f-mono);font-size:11px;color:var(--plan);font-weight:700}
+.roomchips .chip[aria-pressed="true"] .code{color:var(--mark)}
+.roompanel{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--plan);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.roompanel h3{font-size:26px;font-weight:850;font-stretch:80%;line-height:1.05}
+.roompanel .tag{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.codebox{font-family:var(--f-mono);font-weight:700;border:2px solid var(--plan);color:var(--plan);padding:1px 8px;border-radius:4px;letter-spacing:.06em}
+.roompanel p{margin:0}
+.roompanel .f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.roompanel .f > *:not(span){color:var(--ink);font-size:14px}
+.roompanel ul{margin:0;padding-left:18px;font-size:14px}
+.meta .roomtag{color:var(--plan);font-weight:600}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:14px;font-weight:600;z-index:20;transition:opacity .2s}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="label">
+    <div class="l">
+      <span class="eyebrow">Déménagement · ne pas renverser</span>
+      <h1>Samedi 28 novembre</h1>
+      <div class="fragile"><span>Planning du déménagement</span><span id="sync" class="mono">Connexion…</span></div>
+    </div>
+    <div class="stamp"><b id="jx" class="mono">J-?</b><span id="jxl">avant le jour J</span></div>
+  </header>
+
+  <section class="summary" aria-label="Résumé">
+    <div class="tile prog"><span class="k" id="progk">Avancement</span><div class="bar"><i id="progbar"></i></div><span class="k" id="progt">—</span></div>
+    <div class="tile" id="tile-late"><span class="k">En retard</span><span class="v" id="n-late">—</span></div>
+    <div class="tile"><span class="k">Cette semaine</span><span class="v" id="n-week">—</span></div>
+    <div class="tile"><span class="k">À attribuer</span><span class="v" id="n-free">—</span></div>
+  </section>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <div class="toolbar">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-taches" aria-selected="true" data-view="taches">Tâches</button>
+      <button role="tab" id="tab-jourj" aria-selected="false" data-view="jourj">Jour J</button>
+      <button role="tab" id="tab-plan" aria-selected="false" data-view="plan">Plan</button>
+      <button role="tab" id="tab-equipe" aria-selected="false" data-view="equipe">Équipe</button>
+    </div>
+    <label class="me" for="me">Vous êtes
+      <select id="me"><option value="">— choisir —</option></select>
+    </label>
+  </div>
+
+  <!-- TÂCHES -->
+  <section id="view-taches" class="group" style="gap:18px">
+    <div class="filters" id="filters">
+      <button class="chip" data-cat="" aria-pressed="true">Toutes</button>
+      <span class="spacer"></span>
+      <select id="fwho" aria-label="Filtrer par personne"><option value="">Tout le monde</option><option value="__none">À attribuer</option></select>
+      <button class="btn primary" id="addbtn" type="button">+ Ajouter une tâche</button>
+    </div>
+    <div id="newtask"></div>
+    <div id="groups" style="display:flex;flex-direction:column;gap:18px">
+      <div class="empty">Chargement du planning…</div>
+    </div>
+  </section>
+
+  <!-- JOUR J -->
+  <section id="view-jourj" class="group" hidden style="gap:14px">
+    <div class="group"><h2>Qui est là <small id="crewcount"></small></h2><div class="crewline" id="crewline"></div></div>
+    <div class="group"><h2>Déroulé du samedi</h2><ul class="timeline" id="timeline"></ul></div>
+    <p class="hint">Les tâches datées du 28 novembre apparaissent ici, triées par heure. Ajoutez une heure à une tâche pour la placer dans le déroulé.</p>
+  </section>
+
+  <!-- PLAN -->
+  <section id="view-plan" class="group" hidden style="gap:14px">
+    <div class="group"><h2>Nouvel appartement · lot 2.3 <small>80,9 m² + terrasse 12,6 m²</small></h2>
+      <p class="hint" style="margin:0">Touchez une pièce pour voir sa fiche. Écrivez le code de la pièce sur chaque carton : au déchargement, chacun sait où le poser.</p></div>
+    <div class="planwrap">
+      <div class="planbox">
+        <svg id="plansvg" viewBox="370 205 1365 1065" role="img" aria-label="Plan simplifié de l'appartement 2.3">
+          <defs>
+            <pattern id="hatch" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="16" height="16" style="fill:var(--plan-fill)"/>
+              <line x1="0" y1="0" x2="0" y2="16" style="stroke:var(--plan);stroke-width:3;opacity:.6"/>
+            </pattern>
+          </defs>
+          <g id="rooms"></g>
+          <path d="M 700 1190 L 724 1176 L 724 1204 Z" style="fill:var(--plan)"/>
+          <text x="694" y="1199" text-anchor="end" class="planlbl" style="fill:var(--ink);font-weight:700">Entrée</text>
+          <text x="1728" y="1262" text-anchor="end" class="planlbl">Plan simplifié · lot 2.3</text>
+        </svg>
+        <div class="roomchips" id="roomchips"></div>
+      </div>
+      <aside class="roompanel" id="roompanel"></aside>
+    </div>
+  </section>
+
+  <!-- ÉQUIPE -->
+  <section id="view-equipe" class="group" hidden style="gap:14px">
+    <form class="addform" id="crewform">
+      <label class="f" for="cname"><span>Prénom</span><input type="text" id="cname" required maxlength="40" placeholder="ex. Camille"></label>
+      <label class="f" for="cdispo" style="flex-basis:260px"><span>Disponibilités, véhicule, remarques</span><input type="text" id="cdispo" maxlength="120" placeholder="ex. Samedi 8h–14h, a une voiture"></label>
+      <button class="btn primary" type="submit">Ajouter à l'équipe</button>
+    </form>
+    <div class="crew" id="crew"></div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+
+<footer class="wrap" style="margin-top:28px">
+  <div class="addform" id="localbar" style="align-items:center">
+    <p class="hint" style="margin:0;flex:1 1 260px">Les données sont enregistrées <strong>dans ce navigateur</strong>, sur cet appareil. Pour les transmettre à quelqu'un ou les retrouver ailleurs, exportez-les puis importez le fichier.</p>
+    <button class="btn" type="button" id="exp">Exporter (.json)</button>
+    <label class="btn" for="impfile" style="cursor:pointer">Importer…</label>
+    <input type="file" id="impfile" accept="application/json,.json" hidden>
+    <button class="btn danger" type="button" id="reset">Réinitialiser</button>
+  </div>
+</footer>
+<script>
+(function(){
+  if (window.claude && window.claude.use) return;
+  const KEY = "demenagement-28nov-v1";
+  const SEED = {"tasks": {"t01": {"cat": "logistique", "done": false, "due": "2026-11-14", "notes": "Volume conseillé pour ~80 m² : 20 m³. Vérifier l'heure de retrait et de retour le 28.", "room": "", "time": "", "title": "Réserver l'utilitaire (ou confirmer le déménageur)", "who": []}, "t02": {"cat": "demarches", "done": false, "due": "2026-11-14", "notes": "Délai souvent de 10 à 15 jours : à faire en priorité, pour l'ancienne et la nouvelle adresse.", "room": "", "time": "", "title": "Demander l'autorisation de stationnement à la mairie (camion)", "who": []}, "t03": {"cat": "demarches", "done": false, "due": "2026-11-14", "notes": "Compter environ 2 semaines pour l'activation de la ligne.", "room": "", "time": "", "title": "Transférer l'abonnement internet", "who": []}, "t04": {"cat": "demarches", "done": false, "due": "2026-11-14", "notes": "", "room": "", "time": "", "title": "Poser le congé du vendredi 27 / lundi 30", "who": []}, "t05": {"cat": "equipe", "done": false, "due": "2026-11-15", "notes": "Les ajouter dans l'onglet Équipe avec leurs disponibilités.", "room": "", "time": "", "title": "Recruter les aides et fixer les horaires du samedi", "who": []}, "t06": {"cat": "demarches", "done": false, "due": "2026-11-16", "notes": "", "room": "", "time": "", "title": "Fixer les rendez-vous d'état des lieux (sortie et entrée)", "who": []}, "t07": {"cat": "logistique", "done": false, "due": "2026-11-16", "notes": "Environ 50 cartons + 2 rouleaux de papier bulle.", "room": "", "time": "", "title": "Acheter cartons, scotch, papier bulle, marqueurs, sacs", "who": []}, "t08": {"cat": "cartons", "done": false, "due": "2026-11-17", "notes": "Codes dans l'onglet Plan : SAL, CUI, GCH, SDB-C, PCH, SDB, ARM, COU, TER, CAV.", "room": "", "time": "", "title": "Imprimer les codes des pièces pour étiqueter les cartons", "who": []}, "t09": {"cat": "cartons", "done": false, "due": "2026-11-18", "notes": "", "room": "", "time": "", "title": "Trier : donner, vendre ou jeter ce qui ne part pas", "who": []}, "t10": {"cat": "logistique", "done": false, "due": "2026-11-20", "notes": "Pour les deux immeubles.", "room": "", "time": "", "title": "Prévenir le syndic / la gérance et réserver l'ascenseur", "who": []}, "t11": {"cat": "demarches", "done": false, "due": "2026-11-20", "notes": "L'attestation est demandée à la remise des clés.", "room": "", "time": "", "title": "Assurance habitation du nouvel appartement", "who": []}, "t12": {"cat": "demarches", "done": false, "due": "2026-11-20", "notes": "Donner les index relevés le jour J.", "room": "", "time": "", "title": "Électricité et gaz : résilier l'ancien, ouvrir le nouveau", "who": []}, "t13": {"cat": "demarches", "done": false, "due": "2026-11-20", "notes": "", "room": "", "time": "", "title": "Réexpédition du courrier (La Poste)", "who": []}, "t14": {"cat": "logistique", "done": false, "due": "2026-11-20", "notes": "Vérifier le passage du canapé, du frigo et du lit double. Attention à la porte de la petite chambre en angle.", "room": "couloir", "time": "", "title": "Mesurer portes et couloir du nouvel appartement", "who": []}, "t15": {"cat": "cartons", "done": false, "due": "2026-11-21", "notes": "Livres dans de petits cartons : sinon trop lourds.", "room": "salon", "time": "", "title": "Emballer livres, déco et affaires de saison", "who": []}, "t16": {"cat": "cartons", "done": false, "due": "2026-11-21", "notes": "", "room": "cave", "time": "", "title": "Vider et préparer les affaires de la cave", "who": []}, "t17": {"cat": "logistique", "done": false, "due": "2026-11-21", "notes": "", "room": "", "time": "", "title": "Déchetterie / rendez-vous encombrants", "who": []}, "t18": {"cat": "equipe", "done": false, "due": "2026-11-21", "notes": "", "room": "", "time": "", "title": "Trouver une garde pour enfants et animaux le samedi", "who": []}, "t19": {"cat": "cartons", "done": false, "due": "2026-11-24", "notes": "", "room": "petite-chambre", "time": "", "title": "Emballer la petite chambre (sauf literie)", "who": []}, "t20": {"cat": "cartons", "done": false, "due": "2026-11-25", "notes": "Vaisselle : carton FRAGILE, assiettes posées sur la tranche.", "room": "cuisine", "time": "", "title": "Emballer la cuisine (garder un kit minimum)", "who": []}, "t21": {"cat": "demarches", "done": false, "due": "2026-11-25", "notes": "Prévient en une fois impôts, CAF, Assurance maladie, caisse de retraite, etc.", "room": "", "time": "", "title": "Déclarer le changement d'adresse en ligne (service-public.fr)", "who": []}, "t22": {"cat": "demarches", "done": false, "due": "2026-11-25", "notes": "", "room": "", "time": "", "title": "Eau : relève et transfert du contrat", "who": []}, "t23": {"cat": "cartons", "done": false, "due": "2026-11-26", "notes": "", "room": "armoire", "time": "", "title": "Vider l'armoire murale et le placard de l'entrée", "who": []}, "t24": {"cat": "menage", "done": false, "due": "2026-11-26", "notes": "24 à 48 h avant le transport.", "room": "cuisine", "time": "", "title": "Dégivrer et vider le congélateur", "who": []}, "t25": {"cat": "cartons", "done": false, "due": "2026-11-26", "notes": "Débrancher et vidanger la machine à laver, fixer le tambour.", "room": "sdb-principale", "time": "", "title": "Emballer la salle de bain (garder le nécessaire)", "who": []}, "t26": {"cat": "logistique", "done": false, "due": "2026-11-27", "notes": "Vis dans des sachets scotchés sur chaque meuble.", "room": "grande-chambre", "time": "", "title": "Démonter les meubles (lits, bureau, étagères)", "who": []}, "t27": {"cat": "cartons", "done": false, "due": "2026-11-27", "notes": "Papiers importants, chargeurs, clés, outils, papier toilette, draps, médicaments, de quoi faire un café.", "room": "", "time": "", "title": "Préparer le kit de survie", "who": []}, "t28": {"cat": "equipe", "done": false, "due": "2026-11-27", "notes": "Café et viennoiseries le matin, pique-nique à midi, beaucoup d'eau.", "room": "", "time": "", "title": "Courses : repas et boissons pour l'équipe", "who": []}, "t29": {"cat": "logistique", "done": false, "due": "2026-11-28", "notes": "Permis + carte bancaire pour la caution. Photos du véhicule au départ.", "room": "", "time": "08:00", "title": "Récupérer l'utilitaire", "who": []}, "t30": {"cat": "equipe", "done": false, "due": "2026-11-28", "notes": "", "room": "", "time": "08:30", "title": "Accueil de l'équipe, café et répartition des rôles", "who": []}, "t31": {"cat": "logistique", "done": false, "due": "2026-11-28", "notes": "Cartons de la cave chargés en dernier.", "room": "", "time": "09:00", "title": "Chargement : meubles lourds d'abord, cartons ensuite", "who": []}, "t32": {"cat": "demarches", "done": false, "due": "2026-11-28", "notes": "Électricité, gaz, eau.", "room": "", "time": "09:00", "title": "Relever les compteurs et photographier l'ancien logement", "who": []}, "t33": {"cat": "equipe", "done": false, "due": "2026-11-28", "notes": "", "room": "", "time": "12:30", "title": "Pause déjeuner", "who": []}, "t34": {"cat": "logistique", "done": false, "due": "2026-11-28", "notes": "Un responsable par pièce (onglet Plan) indique où poser chaque carton. Couloir toujours dégagé.", "room": "", "time": "13:30", "title": "Trajet et déchargement pièce par pièce", "who": []}, "t35": {"cat": "logistique", "done": false, "due": "2026-11-28", "notes": "Attendre quelques heures avant de brancher le frigo s'il a été couché.", "room": "grande-chambre", "time": "16:00", "title": "Remonter les lits et brancher le frigo", "who": []}, "t36": {"cat": "menage", "done": false, "due": "2026-11-28", "notes": "", "room": "", "time": "17:00", "title": "Ménage de l'ancien logement", "who": []}, "t37": {"cat": "logistique", "done": false, "due": "2026-11-28", "notes": "", "room": "", "time": "18:00", "title": "Rendre l'utilitaire (plein fait)", "who": []}, "t38": {"cat": "demarches", "done": false, "due": "2026-11-28", "notes": "", "room": "", "time": "18:30", "title": "Relever les compteurs du nouvel appartement", "who": []}, "t39": {"cat": "demarches", "done": false, "due": "2026-11-29", "notes": "", "room": "", "time": "", "title": "Mettre le nom sur la boîte aux lettres et l'interphone", "who": []}, "t40": {"cat": "demarches", "done": false, "due": "2026-11-30", "notes": "Date à confirmer avec le propriétaire.", "room": "", "time": "", "title": "État des lieux de sortie et remise des clés", "who": []}, "t41": {"cat": "equipe", "done": false, "due": "2026-12-06", "notes": "", "room": "", "time": "", "title": "Remercier l'équipe (apéro / dîner)", "who": []}, "t42": {"cat": "demarches", "done": false, "due": "2026-12-15", "notes": "Carte grise : obligatoire dans le mois qui suit.", "room": "", "time": "", "title": "Carte grise et liste électorale : nouvelle adresse", "who": []}, "t43": {"cat": "demarches", "done": false, "due": "2027-01-30", "notes": "1 mois si l'état des lieux est conforme, 2 mois sinon.", "room": "", "time": "", "title": "Suivre le remboursement du dépôt de garantie", "who": []}}, "crew": {}, "rooms": {}};
+  let store;
+  try { store = JSON.parse(localStorage.getItem(KEY) || "null"); } catch { store = null; }
+  if (!store || typeof store !== "object") store = JSON.parse(JSON.stringify(SEED));
+  for (const c of ["tasks","crew","rooms"]) store[c] = store[c] || {};
+  let memOnly = false;
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch { if(!memOnly){ memOnly = true; const s=document.getElementById("sync"); if(s) s.textContent="Non enregistré (stockage du navigateur bloqué)"; } } }
+  save();
+  const listeners = {};
+  function snap(c){
+    const docs = Object.keys(store[c]||{}).sort().map(id => { const data = store[c][id]; return { id, exists:true, data: () => JSON.parse(JSON.stringify(data)), metadata:{fromCache:false,hasPendingWrites:false} }; });
+    return { docs, size: docs.length, empty: !docs.length, metadata:{fromCache:false,hasPendingWrites:false}, docChanges: () => [] };
+  }
+  function emit(c){ (listeners[c]||[]).forEach(fn => { try { fn(snap(c)); } catch(e){ console.error(e); } }); }
+  function rid(){ return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function docRef(c, id){
+    id = id || rid();
+    return {
+      id, path: c + "/" + id,
+      async get(){ const d = store[c][id]; return { id, exists: !!d, data: () => d && JSON.parse(JSON.stringify(d)), metadata:{fromCache:false,hasPendingWrites:false} }; },
+      async set(data){ store[c][id] = JSON.parse(JSON.stringify(data)); save(); emit(c); },
+      async update(data){ if(!store[c][id]) throw {code:"invalid_argument",message:"absent"}; Object.assign(store[c][id], JSON.parse(JSON.stringify(data))); save(); emit(c); },
+      async delete(){ delete store[c][id]; save(); emit(c); },
+    };
+  }
+  const db = {
+    collection(c){
+      store[c] = store[c] || {};
+      return {
+        path: c,
+        doc: id => docRef(c, id),
+        async add(data){ const r = docRef(c); await r.set(data); return r; },
+        async get(){ return snap(c); },
+        onSnapshot(next){ (listeners[c] ||= []).push(next); setTimeout(() => next(snap(c)), 0); return () => { listeners[c] = listeners[c].filter(f => f !== next); }; },
+      };
+    }
+  };
+  window.claude = { use: async (name) => name === "db" ? db : null };
+
+  function replaceAll(next){
+    for (const c of ["tasks","crew","rooms"]) { store[c] = (next && next[c] && typeof next[c] === "object") ? next[c] : {}; }
+    save(); ["tasks","crew","rooms"].forEach(emit);
+  }
+  function toast(m){ const t=document.getElementById("toast"); if(!t) return; t.textContent=m; t.hidden=false; setTimeout(()=>t.hidden=true,2200); }
+  document.getElementById("exp").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify({format:"demenagement-28nov", version:1, exportedAt:new Date().toISOString(), ...store}, null, 2)], {type:"application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "demenagement-28-novembre-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  });
+  document.getElementById("impfile").addEventListener("change", async e => {
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      if (!data || typeof data.tasks !== "object") throw new Error("format");
+      replaceAll(data); toast("Données importées");
+    } catch { toast("Ce fichier n'est pas un export du planning."); }
+    e.target.value = "";
+  });
+  const rb = document.getElementById("reset");
+  rb.addEventListener("click", () => {
+    if (rb.dataset.armed !== "1") { rb.dataset.armed = "1"; rb.textContent = "Confirmer : tout effacer et revenir au planning initial"; setTimeout(()=>{rb.dataset.armed="";rb.textContent="Réinitialiser";}, 5000); return; }
+    replaceAll(JSON.parse(JSON.stringify(SEED))); rb.dataset.armed=""; rb.textContent="Réinitialiser"; toast("Planning réinitialisé");
+  });
+})();
+</script>
+<script>
+const MOVE = "2026-11-28";
+const CATS = {
+  demarches:{label:"Démarches", v:"--c-demarches"},
+  logistique:{label:"Logistique", v:"--c-logistique"},
+  cartons:{label:"Tri & cartons", v:"--c-cartons"},
+  menage:{label:"Ménage", v:"--c-menage"},
+  equipe:{label:"Équipe & repas", v:"--c-equipe"},
+};
+/* Pièces du lot 2.3 : coordonnées reprises du plan d'architecte */
+const ROOMS = [
+  {id:"salon", name:"Salon", code:"SAL", m2:"16,50", pts:"1122,490 1578,490 1578,875 1122,875", at:[1350,680], open:true,
+   desc:"Séjour lumineux, ouvert sur la cuisine, avec une baie vitrée sur la terrasse. Canapé, meuble TV, bibliothèque. Le plus grand espace : on peut y poser les cartons en attente."},
+  {id:"cuisine", name:"Cuisine", code:"CUI", m2:"15,30", pts:"1122,875 1578,875 1578,1250 1122,1250", at:[1350,1020], open:true,
+   desc:"Repas-cuisine ouverte sur le salon. Plan de travail le long du mur du fond, place pour la table à manger. Cartons vaisselle (fragile), électroménager, réfrigérateur."},
+  {id:"grande-chambre", name:"Grande chambre", code:"GCH", m2:"15,58", pts:"380,385 735,385 735,880 380,880", at:[557,610],
+   desc:"Chambre parentale avec placard intégré et accès direct à sa propre salle de bain. Lit double, tables de chevet, commode."},
+  {id:"sdb-chambre", name:"Salle de bain de la chambre", short:"SdB chambre", code:"SDB-C", m2:"5,03", pts:"380,885 680,885 680,1080 380,1080", at:[530,975],
+   desc:"Salle de bain avec baignoire, accessible uniquement par la grande chambre. Cartons linge de toilette et produits de la chambre parentale."},
+  {id:"petite-chambre", name:"Petite chambre", code:"PCH", m2:"11,90", pts:"745,385 1115,385 1115,755 745,755", at:[960,560],
+   desc:"Chambre avec placard intégré près de la porte. Lit simple ou bureau. La porte est à l'angle : passer les meubles longs en biais."},
+  {id:"sdb-principale", name:"Salle de bain principale", short:"SdB princ.", code:"SDB", m2:"4,65", pts:"905,890 1110,890 1110,1250 905,1250", at:[1007,1060],
+   desc:"Salle de douche avec WC et emplacement pour la machine à laver, accessible depuis le couloir. Prévoir l'arrivée d'eau et l'évacuation pour la machine."},
+  {id:"armoire", name:"Armoire murale", short:"Armoire", code:"ARM", m2:"", pts:"688,890 745,890 745,1080 688,1080", at:[716,985], vertical:true,
+   desc:"Placard mural dans le couloir, juste après l'entrée. Manteaux, chaussures, aspirateur, produits ménagers."},
+  {id:"couloir", name:"Couloir", code:"COU", m2:"11,90", pts:"735,760 1120,760 1120,885 905,885 905,1255 730,1255 730,1085 745,1085 745,885 735,885", at:[830,830],
+   desc:"Hall d'entrée qui dessert toutes les pièces. Le garder dégagé pendant le déchargement : rien ne doit y rester posé."},
+  {id:"terrasse", name:"Terrasse", code:"TER", m2:"12,60", pts:"1140,225 1718,225 1718,466 1140,466", at:[1430,340],
+   desc:"Balcon couvert accessible par le salon. Plantes, mobilier de jardin. Ne pas y stocker de cartons s'il pleut."},
+  {id:"cave", name:"Cave", code:"CAV", m2:"", pts:"385,1125 600,1125 600,1250 385,1250", at:[492,1185], dashed:true, sub:"au sous-sol",
+   desc:"Cave au sous-sol, par l'escalier de l'immeuble (hors plan). Cartons à stocker, vélos, outils, saisonnier. À charger en dernier, décharger en premier."},
+];
+const ROOM = Object.fromEntries(ROOMS.map(r=>[r.id,r]));
+
+const AV = ["#2f5bd3","#8a3fd1","#b5651d","#0f7f80","#c93a73","#3d7a1f","#5b6478","#b0352a"];
+
+const S = { tasks:new Map(), crew:new Map(), rooms:new Map(), room:"", selRoom:"salon", panelFor:"", view:"taches", cat:"", who:"", me:"", openId:null, adding:false, readonly:false, db:null, user:null, loaded:{t:false,c:false} };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ls = { get(k){try{return localStorage.getItem(k)||""}catch{return ""}}, set(k,v){try{localStorage.setItem(k,v)}catch{}} };
+
+function todayStr(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parseD(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function diff(a,b){return Math.round((parseD(b)-parseD(a))/864e5)}
+const fmt = new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"});
+function initials(n){return (n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase()}
+function avColor(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return AV[h%AV.length]}
+function av(id){const p=S.crew.get(id);if(!p)return "";return `<span class="av" style="--avc:${avColor(id)}" title="${esc(p.name)}">${esc(initials(p.name))}</span>`}
+
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,1800)}
+function banner(msg){const b=$("#banner");b.textContent=msg||"";b.hidden=!msg}
+
+async function write(fn, okMsg){
+  if(!S.db){toast("Le planning n'est pas connecté.");return false}
+  if(S.readonly){toast("Lecture seule : demandez l'accès Contributeur.");return false}
+  try{await fn();if(okMsg)toast(okMsg);return true}
+  catch(e){
+    if(e&&e.code==="invalid_argument"){S.readonly=true;banner("Vous pouvez consulter ce planning, mais pas le modifier. Demandez à l'organisateur de vous donner l'accès « Contributeur ».");render()}
+    else if(e&&e.code==="quota_exceeded")toast("Le planning est plein : supprimez des tâches terminées.");
+    else toast("Échec de l'enregistrement. Réessayez dans un instant.");
+    return false;
+  }
+}
+
+/* ---------- Classement ---------- */
+function bucket(t,today){
+  if(t.done) return "done";
+  if(!t.due) return "nodate";
+  if(t.due===MOVE) return "jourj";
+  if(t.due>MOVE) return "apres";
+  if(t.due<today) return "late";
+  if(diff(today,t.due)<=6) return "week";
+  return "avant";
+}
+const BUCKETS=[["late","En retard"],["week","Cette semaine"],["avant","D'ici le 28"],["jourj","Jour J · samedi 28"],["apres","Après le déménagement"],["nodate","Sans date"]];
+function sortT(a,b){return (a.due||"9999").localeCompare(b.due||"9999")||(a.time||"99").localeCompare(b.time||"99")||(a.title||"").localeCompare(b.title||"")}
+function visible(t){
+  if(S.cat&&t.cat!==S.cat)return false;
+  if(S.room&&t.room!==S.room)return false;
+  const who=t.who||[];
+  if(S.who==="__none"&&who.length)return false;
+  if(S.who&&S.who!=="__none"&&!who.includes(S.who))return false;
+  return true;
+}
+
+/* ---------- Rendu ---------- */
+function whenLabel(t,today){
+  if(!t.due)return {txt:"Sans date",cls:""};
+  const d=diff(today,t.due), base=fmt.format(parseD(t.due));
+  let rel = d===0?"aujourd'hui":d===1?"demain":d>0?`dans ${d} j`:`il y a ${-d} j`;
+  return {txt:`${base} · ${rel}`, cls: !t.done&&d<0?"late":!t.done&&d<=2?"soon":""};
+}
+function taskRow(id,t,today){
+  const c=CATS[t.cat]||{label:"Autre",v:"--muted"};
+  const w=whenLabel(t,today), who=(t.who||[]).filter(x=>S.crew.has(x));
+  const canTake = S.me && S.crew.has(S.me) && !who.includes(S.me) && !t.done && !S.readonly;
+  return `<li class="task${t.done?" done":""}" data-id="${esc(id)}">
+    <input type="checkbox" class="cb" id="done-${esc(id)}" ${t.done?"checked":""} ${S.readonly?"disabled":""} aria-label="Marquer « ${esc(t.title)} » comme fait">
+    <div class="main"><label class="t" for="done-${esc(id)}">${esc(t.title)}</label>
+      ${t.notes?`<div class="notes">${esc(t.notes)}</div>`:""}
+      <div class="meta"><span class="cat" style="--cc:var(${c.v})"><span class="dot"></span>${c.label}</span><span class="when mono ${w.cls}">${w.txt}</span>${t.time?`<span class="mono">${esc(t.time)}</span>`:""}${ROOM[t.room]?`<span class="roomtag">⌂ ${esc(ROOM[t.room].name)}</span>`:""}</div></div>
+    <div class="right">
+      ${canTake?`<button class="take" data-take="${esc(id)}" type="button">Je prends</button>`:""}
+      <span class="people">${who.length?who.map(av).join(""):`<span class="av none">À attribuer</span>`}</span>
+      ${S.readonly?"":`<button class="iconbtn" data-edit="${esc(id)}" aria-expanded="${S.openId===id}" type="button">Modifier</button>`}
+    </div>
+    <div class="slot-editor" data-for="${esc(id)}"></div>
+  </li>`;
+}
+function editorHTML(id,t){
+  const k=id||"new";
+  const crewPicks=[...S.crew].sort((a,b)=>a[1].name.localeCompare(b[1].name)).map(([cid,p])=>
+    `<label class="pick"><input type="checkbox" name="who" value="${esc(cid)}" id="who-${k}-${esc(cid)}" ${(t.who||[]).includes(cid)?"checked":""}>${av(cid)}${esc(p.name)}</label>`).join("");
+  return `<form class="editor" data-editor="${esc(k)}">
+    <label class="f full" for="ti-${k}"><span>Tâche</span><input type="text" id="ti-${k}" name="title" required maxlength="140" value="${esc(t.title||"")}"></label>
+    <label class="f" for="ca-${k}"><span>Catégorie</span><select id="ca-${k}" name="cat">${Object.entries(CATS).map(([v,c])=>`<option value="${v}" ${t.cat===v?"selected":""}>${c.label}</option>`).join("")}</select></label>
+    <label class="f" for="ro-${k}"><span>Pièce</span><select id="ro-${k}" name="room"><option value="">—</option>${ROOMS.map(r=>`<option value="${r.id}" ${t.room===r.id?"selected":""}>${esc(r.name)}</option>`).join("")}</select></label>
+    <label class="f" for="du-${k}"><span>Échéance</span><input type="date" id="du-${k}" name="due" value="${esc(t.due||"")}"></label>
+    <label class="f" for="tm-${k}"><span>Heure</span><input type="time" id="tm-${k}" name="time" value="${esc(t.time||"")}"></label>
+    <div class="f full"><span>Qui s'en occupe</span><div class="picks">${crewPicks||`<span class="hint">Ajoutez d'abord des personnes dans l'onglet Équipe.</span>`}</div></div>
+    <label class="f full" for="no-${k}"><span>Notes (contacts, références, liens)</span><textarea id="no-${k}" name="notes" maxlength="600">${esc(t.notes||"")}</textarea></label>
+    <div class="actions">
+      <button class="btn primary" type="submit">${id?"Enregistrer":"Ajouter la tâche"}</button>
+      <button class="btn ghost" type="button" data-cancel>Annuler</button>
+      ${id?`<span class="spacer"></span><button class="btn danger" type="button" data-del="${esc(id)}">Supprimer</button>`:""}
+    </div>
+  </form>`;
+}
+
+function renderSummary(today){
+  const all=[...S.tasks.values()], done=all.filter(t=>t.done).length;
+  const pct=all.length?Math.round(done/all.length*100):0;
+  $("#progbar").style.width=pct+"%";
+  $("#progt").textContent=all.length?`${done} sur ${all.length} tâches faites · ${pct} %`:"Aucune tâche";
+  const late=all.filter(t=>bucket(t,today)==="late").length;
+  $("#n-late").textContent=late; $("#tile-late").classList.toggle("alert",late>0);
+  $("#n-week").textContent=all.filter(t=>bucket(t,today)==="week").length;
+  $("#n-free").textContent=all.filter(t=>!t.done&&!(t.who||[]).some(x=>S.crew.has(x))).length;
+  const d=diff(today,MOVE);
+  $("#jx").textContent=d>0?`J-${d}`:d===0?"J":`J+${-d}`;
+  $("#jxl").textContent=d>0?"avant le jour J":d===0?"c'est aujourd'hui":"depuis l'emménagement";
+}
+
+function renderFilters(){
+  const f=$("#filters");
+  f.querySelectorAll("[data-cat]").forEach(b=>{if(b.dataset.cat)b.remove()});
+  f.querySelector("[data-clearroom]")?.remove();
+  if(ROOM[S.room]){const rb=document.createElement("button");rb.className="chip";rb.type="button";rb.dataset.clearroom="1";rb.setAttribute("aria-pressed","true");rb.textContent=`⌂ ${ROOM[S.room].name} ✕`;rb.title="Retirer le filtre de pièce";f.prepend(rb)}
+  const first=f.querySelector('[data-cat=""]');
+  first.setAttribute("aria-pressed",String(!S.cat));
+  let after=first;
+  for(const [v,c] of Object.entries(CATS)){
+    const b=document.createElement("button");b.className="chip";b.type="button";b.dataset.cat=v;
+    b.setAttribute("aria-pressed",String(S.cat===v));b.style.setProperty("--cc",`var(${c.v})`);
+    b.innerHTML=`<span class="dot"></span>${c.label}`;after.after(b);after=b;
+  }
+  const opts=[...S.crew].sort((a,b)=>a[1].name.localeCompare(b[1].name));
+  const fw=$("#fwho"), keepW=S.who;
+  fw.innerHTML=`<option value="">Tout le monde</option><option value="__none">À attribuer</option>`+opts.map(([id,p])=>`<option value="${esc(id)}">${esc(p.name)}</option>`).join("");
+  fw.value=(keepW==="__none"||S.crew.has(keepW))?keepW:"";
+  const me=$("#me");
+  me.innerHTML=`<option value="">— choisir —</option>`+opts.map(([id,p])=>`<option value="${esc(id)}">${esc(p.name)}</option>`).join("");
+  me.value=S.crew.has(S.me)?S.me:"";
+}
+
+function renderTasks(today){
+  const box=$("#groups");
+  // garder l'éditeur ouvert (et sa saisie) à travers les re-rendus
+  const openEd = S.openId ? box.querySelector(`[data-editor="${CSS.escape(S.openId)}"]`) : null;
+  if(!S.loaded.t){return}
+  const items=[...S.tasks].filter(([,t])=>visible(t)).sort((a,b)=>sortT(a[1],b[1]));
+  if(!S.tasks.size){box.innerHTML=`<div class="empty">Aucune tâche pour l'instant. Ajoutez la première avec « + Ajouter une tâche ».</div>`;return}
+  if(!items.length){box.innerHTML=`<div class="empty">Aucune tâche ne correspond à ce filtre.</div>`;return}
+  const by={};for(const [id,t] of items)(by[bucket(t,today)]??=[]).push([id,t]);
+  let html="";
+  for(const [k,label] of BUCKETS){
+    const rows=by[k];if(!rows)continue;
+    html+=`<div class="group${k==="late"?" late":""}"><h2>${label}<small>${rows.length}</small></h2><ul class="list">${rows.map(([id,t])=>taskRow(id,t,today)).join("")}</ul></div>`;
+  }
+  if(by.done) html+=`<details class="donebox" id="donebox" ${ls.get("doneOpen")==="1"?"open":""}><summary>Terminé · ${by.done.length}</summary><ul class="list">${by.done.sort((a,b)=>sortT(a[1],b[1])).map(([id,t])=>taskRow(id,t,today)).join("")}</ul></details>`;
+  box.innerHTML=html;
+  if(S.openId){
+    const slot=box.querySelector(`.slot-editor[data-for="${CSS.escape(S.openId)}"]`);
+    if(slot){ if(openEd) slot.replaceWith(openEd); else slot.outerHTML=editorHTML(S.openId,S.tasks.get(S.openId)); }
+    else S.openId=null;
+  }
+}
+
+function renderJourJ(today){
+  const crew=[...S.crew].sort((a,b)=>a[1].name.localeCompare(b[1].name));
+  $("#crewcount").textContent=crew.length?`${crew.length} personne${crew.length>1?"s":""}`:"";
+  $("#crewline").innerHTML=crew.length?crew.map(([id,p])=>`<span class="crewchip">${av(id)}<span>${esc(p.name)}${p.dispo?` <small>· ${esc(p.dispo)}</small>`:""}</span></span>`).join(""):`<span class="hint">Personne pour l'instant. Ajoutez l'équipe dans l'onglet Équipe.</span>`;
+  const day=[...S.tasks].filter(([,t])=>t.due===MOVE).sort((a,b)=>(a[1].time||"99").localeCompare(b[1].time||"99"));
+  const tl=$("#timeline");
+  if(!day.length){tl.innerHTML=`<li class="empty" style="border:0">Aucune tâche pour le 28. Donnez la date du 28 novembre à une tâche pour la voir ici.</li>`;return}
+  const slots={};for(const [id,t] of day)(slots[t.time||"—"]??=[]).push([id,t]);
+  tl.innerHTML=Object.entries(slots).map(([h,rows])=>`<li class="slot"><div class="h">${esc(h==="—"?"Dans la journée":h).replace("Dans la journée","<span style='font-size:11px'>Dans la<br>journée</span>")}</div><div class="b">${rows.map(([id,t])=>{
+    const who=(t.who||[]).filter(x=>S.crew.has(x));
+    return `<div class="row${t.done?" done":""}"><span class="t">${esc(t.title)}</span><span class="people">${who.length?who.map(av).join(""):`<span class="av none">À attribuer</span>`}</span></div>${t.notes?`<div class="hint" style="margin-top:-6px">${esc(t.notes)}</div>`:""}`}).join("")}</div></li>`).join("");
+}
+
+function renderCrew(){
+  const el=$("#crew");
+  $("#crewform").querySelector("button").disabled=S.readonly||!S.db;
+  if(!S.loaded.c){el.innerHTML=`<div class="empty">Chargement de l'équipe…</div>`;return}
+  const crew=[...S.crew].sort((a,b)=>a[1].name.localeCompare(b[1].name));
+  if(!crew.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1">Personne dans l'équipe. Ajoutez-vous, puis chaque aide-déménageur, avec le formulaire ci-dessus.</div>`;return}
+  el.innerHTML=crew.map(([id,p])=>{
+    const mine=[...S.tasks.values()].filter(t=>!t.done&&(t.who||[]).includes(id)).sort(sortT);
+    return `<article class="member"><div class="hd">${av(id)}<div><div class="nm">${esc(p.name)}</div>${p.dispo?`<div class="dispo">${esc(p.dispo)}</div>`:""}</div></div>
+      ${mine.length?`<ul>${mine.slice(0,6).map(t=>`<li>${esc(t.title)}${t.due?` <span class="mono hint">· ${fmt.format(parseD(t.due))}${t.time?" "+esc(t.time):""}</span>`:""}</li>`).join("")}${mine.length>6?`<li class="hint">et ${mine.length-6} autre(s)</li>`:""}</ul>`:`<div class="hint">Aucune tâche en cours.</div>`}
+      <div class="foot"><span>${mine.length} tâche${mine.length>1?"s":""} à faire</span>${S.readonly?"":`<button class="iconbtn" data-rm="${esc(id)}" type="button">Retirer</button>`}</div></article>`;
+  }).join("");
+}
+
+function renderPlan(){
+  const svgNS="http://www.w3.org/2000/svg";
+  const g=$("#rooms");
+  g.innerHTML=ROOMS.map(r=>{
+    const info=S.rooms.get(r.id)||{}, lead=S.crew.get(info.lead);
+    const [x,y]=r.at, label=r.short||r.name;
+    const txt = r.vertical
+      ? `<text class="nm" x="${x}" y="${y}" text-anchor="middle" transform="rotate(-90 ${x} ${y})" style="font-size:22px" dy="8">${esc(label)}</text>`
+      : `<text class="nm" x="${x}" y="${y}" text-anchor="middle">${esc(label)}</text>
+         <text class="m2" x="${x}" y="${y+30}" text-anchor="middle">${r.m2?r.m2+" m²":esc(r.sub||"")} · ${r.code}</text>
+         ${lead?`<text class="ld" x="${x}" y="${y+58}" text-anchor="middle">→ ${esc(lead.name)}</text>`:""}`;
+    return `<g class="room${r.dashed?" open":""}${S.selRoom===r.id?" sel":""}" data-room="${r.id}"><polygon class="fill" points="${r.pts}"/>${txt}</g>`;
+  }).join("")
+  // séparation ouverte salon / cuisine
+  + `<line x1="1122" y1="875" x2="1578" y2="875" style="stroke:var(--plan-fill);stroke-width:8"/><line x1="1122" y1="875" x2="1578" y2="875" style="stroke:var(--wall);stroke-width:2;stroke-dasharray:12 10;pointer-events:none"/>`;
+  $("#roomchips").innerHTML=ROOMS.map(r=>`<button class="chip" type="button" data-room="${r.id}" aria-pressed="${S.selRoom===r.id}"><span class="code">${r.code}</span>${esc(r.name)}</button>`).join("");
+
+  const p=$("#roompanel"), r=ROOM[S.selRoom];
+  if(S.panelFor===r.id && p.contains(document.activeElement) && document.activeElement.tagName==="TEXTAREA") return;
+  S.panelFor=r.id;
+  const info=S.rooms.get(r.id)||{};
+  const tasks=[...S.tasks].filter(([,t])=>t.room===r.id).sort((a,b)=>sortT(a[1],b[1]));
+  const open=tasks.filter(([,t])=>!t.done);
+  const crewOpts=[...S.crew].sort((a,b)=>a[1].name.localeCompare(b[1].name)).map(([id,c])=>`<option value="${esc(id)}" ${info.lead===id?"selected":""}>${esc(c.name)}</option>`).join("");
+  p.innerHTML=`<div class="tag"><span class="codebox">${r.code}</span>${r.m2?`<span class="mono">${r.m2} m²</span>`:`<span>${esc(r.sub||"")}</span>`}</div>
+    <h3>${esc(r.name)}</h3>
+    <p>${esc(r.desc)}</p>
+    <label class="f" for="room-lead"><span>Responsable au déchargement (dit où poser chaque carton)</span>
+      <select id="room-lead" ${S.readonly||!S.db?"disabled":""}><option value="">— personne —</option>${crewOpts}</select></label>
+    <label class="f" for="room-notes"><span>Notes sur la pièce (meubles prévus, mesures, consignes)</span>
+      <textarea id="room-notes" maxlength="600" ${S.readonly||!S.db?"disabled":""} placeholder="ex. Lit contre le mur de gauche, bureau sous la fenêtre">${esc(info.notes||"")}</textarea></label>
+    ${S.readonly||!S.db?"":`<div><button class="btn" type="button" id="room-save">Enregistrer les notes</button></div>`}
+    <div class="f"><span>Tâches liées · ${open.length} à faire${tasks.length>open.length?`, ${tasks.length-open.length} faite(s)`:""}</span>
+      ${open.length?`<ul>${open.slice(0,6).map(([,t])=>`<li>${esc(t.title)}</li>`).join("")}</ul>`:`<span class="hint">Aucune tâche à faire pour cette pièce.</span>`}</div>
+    <div><button class="btn primary" type="button" id="room-tasks">Voir les tâches de la pièce</button></div>`;
+}
+
+function render(){
+  const today=todayStr();
+  renderSummary(today); renderFilters(); renderTasks(today); renderJourJ(today); renderPlan(); renderCrew();
+  $("#addbtn").disabled=S.readonly||!S.db;
+  const nt=$("#newtask");
+  if(S.adding&&!nt.firstChild){nt.innerHTML=`<div class="list" style="padding:0 0 0 0">`+editorHTML("",{cat:"logistique",due:today,who:S.me&&S.crew.has(S.me)?[S.me]:[]}).replace('class="editor"','class="editor" style="margin:0;border:0"')+`</div>`;nt.querySelector("input").focus()}
+  if(!S.adding)nt.innerHTML="";
+}
+
+function setView(v){
+  S.view=v;ls.set("view",v);
+  for(const n of ["taches","jourj","plan","equipe"]){$("#view-"+n).hidden=n!==v;$("#tab-"+n).setAttribute("aria-selected",String(n===v))}
+}
+
+/* ---------- Événements ---------- */
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("[data-view]");if(b)setView(b.dataset.view)});
+$("#filters").addEventListener("click",e=>{
+  if(e.target.closest("[data-clearroom]")){S.room="";render();return}
+  const b=e.target.closest("[data-cat]");if(!b)return;S.cat=b.dataset.cat;render()});
+$("#view-plan").addEventListener("click",async e=>{
+  const r=e.target.closest("[data-room]");
+  if(r){S.selRoom=r.dataset.room;S.panelFor="";render();return}
+  if(e.target.closest("#room-tasks")){S.room=S.selRoom;S.cat="";S.who="";setView("taches");render();window.scrollTo({top:0});return}
+  if(e.target.closest("#room-save")){const id=S.selRoom,cur=S.rooms.get(id)||{};
+    await write(()=>S.db.collection("rooms").doc(id).set({lead:cur.lead||"",notes:$("#room-notes").value.trim()}),"Notes enregistrées");
+    document.activeElement?.blur();S.panelFor="";render()}
+});
+$("#view-plan").addEventListener("change",async e=>{
+  if(e.target.id!=="room-lead")return;const id=S.selRoom,cur=S.rooms.get(id)||{};
+  await write(()=>S.db.collection("rooms").doc(id).set({notes:cur.notes||"",lead:e.target.value}),"Responsable enregistré");
+});
+$("#fwho").addEventListener("change",e=>{S.who=e.target.value;render()});
+$("#me").addEventListener("change",e=>{S.me=e.target.value;ls.set("me",S.me);if(S.me){S.who=S.me;toast("Filtre : vos tâches")}render()});
+$("#addbtn").addEventListener("click",()=>{S.adding=!S.adding;render()});
+
+document.addEventListener("toggle",e=>{if(e.target.id==="donebox")ls.set("doneOpen",e.target.open?"1":"0")},true);
+
+document.addEventListener("change",async e=>{
+  const cb=e.target.closest(".cb");if(!cb)return;
+  const id=cb.closest("[data-id]").dataset.id;
+  const ok=await write(()=>S.db.collection("tasks").doc(id).update({done:cb.checked}),cb.checked?"Fait ✓":"Remis à faire");
+  if(!ok)cb.checked=!cb.checked;
+});
+
+document.addEventListener("click",async e=>{
+  const ed=e.target.closest("[data-edit]");
+  if(ed){const id=ed.dataset.edit;S.openId=S.openId===id?null:id;render();return}
+  if(e.target.closest("[data-cancel]")){if(e.target.closest("#newtask"))S.adding=false;else S.openId=null;render();return}
+  const tk=e.target.closest("[data-take]");
+  if(tk){const id=tk.dataset.take,t=S.tasks.get(id);if(!t)return;
+    await write(()=>S.db.collection("tasks").doc(id).update({who:[...(t.who||[]).filter(x=>S.crew.has(x)),S.me]}),"C'est noté, merci !");return}
+  const del=e.target.closest("[data-del]");
+  if(del){
+    if(del.dataset.armed!=="1"){del.dataset.armed="1";del.textContent="Confirmer la suppression";return}
+    const id=del.dataset.del;if(await write(()=>S.db.collection("tasks").doc(id).delete(),"Tâche supprimée")){S.openId=null;render()}return}
+  const rm=e.target.closest("[data-rm]");
+  if(rm){
+    if(rm.dataset.armed!=="1"){rm.dataset.armed="1";rm.textContent="Confirmer";return}
+    const id=rm.dataset.rm;
+    for(const [tid,t] of S.tasks){if((t.who||[]).includes(id))await write(()=>S.db.collection("tasks").doc(tid).update({who:t.who.filter(x=>x!==id)}))}
+    await write(()=>S.db.collection("crew").doc(id).delete(),"Retiré de l'équipe");
+    if(S.me===id){S.me="";ls.set("me","")}
+    return}
+});
+
+document.addEventListener("submit",async e=>{
+  const f=e.target.closest("[data-editor]");
+  if(f){e.preventDefault();
+    const fd=new FormData(f), k=f.dataset.editor;
+    const body={title:String(fd.get("title")||"").trim(),cat:fd.get("cat"),due:fd.get("due")||"",room:fd.get("room")||"",time:fd.get("time")||"",notes:String(fd.get("notes")||"").trim(),who:fd.getAll("who")};
+    if(!body.title)return;
+    if(k==="new"){
+      if(await write(()=>S.db.collection("tasks").doc().set({...body,done:false}),"Tâche ajoutée")){S.adding=false;render()}
+    }else{
+      if(await write(()=>S.db.collection("tasks").doc(k).update(body),"Enregistré")){S.openId=null;render()}
+    }
+    return}
+  if(e.target.id==="crewform"){e.preventDefault();
+    const name=$("#cname").value.trim(),dispo=$("#cdispo").value.trim();if(!name)return;
+    if(await write(()=>S.db.collection("crew").doc().set({name,dispo}),`${name} a rejoint l'équipe`)){$("#cname").value="";$("#cdispo").value=""}
+  }
+});
+
+/* ---------- Données ---------- */
+setView(["taches","jourj","plan","equipe"].includes(ls.get("view"))?ls.get("view"):"taches");
+S.me=ls.get("me");
+render();
+
+(async()=>{
+  const db=await (window.claude?.use?.("db") ?? null);
+  if(!db){$("#sync").textContent="Hors ligne";$("#groups").innerHTML=`<div class="empty">Le planning partagé n'est pas disponible ici. Ouvrez le lien en étant connecté à claude.ai.</div>`;S.loaded.c=true;render();return}
+  S.db=db;
+  try{const u=await window.claude.use("user");S.user=u;if(u){const w=await u.can("data.write");if(w===false){S.readonly=true;banner("Vous pouvez consulter ce planning, mais pas le modifier. Demandez à l'organisateur l'accès « Contributeur ».")}}}catch{}
+  let timer=setTimeout(()=>{$("#sync").textContent="Données injoignables pour l'instant";},10000);
+  const live=()=>{if(S.loaded.t&&S.loaded.c){clearTimeout(timer);$("#sync").textContent="● Enregistré dans ce navigateur"}};
+  const err=()=>{clearTimeout(timer);$("#sync").textContent="Connexion perdue — rechargez la page"};
+  db.collection("tasks").onSnapshot(snap=>{
+    S.tasks=new Map(snap.docs.map(d=>[d.id,d.data()]));
+    if(!snap.metadata.fromCache){S.loaded.t=true;live()}else S.loaded.t=S.loaded.t||snap.size>0;
+    render();
+  },err);
+  db.collection("rooms").onSnapshot(snap=>{S.rooms=new Map(snap.docs.map(d=>[d.id,d.data()]));render()},()=>{});
+  db.collection("crew").onSnapshot(snap=>{
+    S.crew=new Map(snap.docs.map(d=>[d.id,d.data()]));
+    if(!snap.metadata.fromCache){S.loaded.c=true;live()}else S.loaded.c=S.loaded.c||snap.size>0;
+    render();
+  },err);
+})();
+</script>
+</body>
+</html>
